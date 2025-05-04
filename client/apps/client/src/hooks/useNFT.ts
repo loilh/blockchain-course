@@ -44,7 +44,6 @@ export const useUserNFTs = () => {
     enabled: !!address && !!contract,
     gcTime: 0,
     refetchInterval: 1000,
-
   })
 }
 

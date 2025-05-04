@@ -49,13 +49,22 @@ export declare namespace MarketPlace {
 
 export interface MarketPlaceInterface extends Interface {
   getFunction(
-    nameOrSignature: "cancelListing" | "getListingByPage" | "list" | "listings"
+    nameOrSignature:
+      | "buy"
+      | "cancelListing"
+      | "getListingByPage"
+      | "list"
+      | "listings"
   ): FunctionFragment;
 
   getEvent(
-    nameOrSignatureOrTopic: "ListingCancelled" | "NewListing"
+    nameOrSignatureOrTopic: "ListingCancelled" | "NFTPurchased" | "NewListing"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "buy",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "cancelListing",
     values: [AddressLike, BigNumberish]
@@ -73,6 +82,7 @@ export interface MarketPlaceInterface extends Interface {
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "buy", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cancelListing",
     data: BytesLike
@@ -100,6 +110,31 @@ export namespace ListingCancelledEvent {
     nftAddress: string;
     tokenId: bigint;
     seller: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace NFTPurchasedEvent {
+  export type InputTuple = [
+    buyer: AddressLike,
+    nftAddress: AddressLike,
+    tokenId: BigNumberish,
+    price: BigNumberish
+  ];
+  export type OutputTuple = [
+    buyer: string,
+    nftAddress: string,
+    tokenId: bigint,
+    price: bigint
+  ];
+  export interface OutputObject {
+    buyer: string;
+    nftAddress: string;
+    tokenId: bigint;
+    price: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -175,6 +210,12 @@ export interface MarketPlace extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  buy: TypedContractMethod<
+    [nftAddress: AddressLike, tokenId: BigNumberish],
+    [void],
+    "payable"
+  >;
+
   cancelListing: TypedContractMethod<
     [nftAddress: AddressLike, tokenId: BigNumberish],
     [void],
@@ -211,6 +252,13 @@ export interface MarketPlace extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "buy"
+  ): TypedContractMethod<
+    [nftAddress: AddressLike, tokenId: BigNumberish],
+    [void],
+    "payable"
+  >;
   getFunction(
     nameOrSignature: "cancelListing"
   ): TypedContractMethod<
@@ -256,6 +304,13 @@ export interface MarketPlace extends BaseContract {
     ListingCancelledEvent.OutputObject
   >;
   getEvent(
+    key: "NFTPurchased"
+  ): TypedContractEvent<
+    NFTPurchasedEvent.InputTuple,
+    NFTPurchasedEvent.OutputTuple,
+    NFTPurchasedEvent.OutputObject
+  >;
+  getEvent(
     key: "NewListing"
   ): TypedContractEvent<
     NewListingEvent.InputTuple,
@@ -273,6 +328,17 @@ export interface MarketPlace extends BaseContract {
       ListingCancelledEvent.InputTuple,
       ListingCancelledEvent.OutputTuple,
       ListingCancelledEvent.OutputObject
+    >;
+
+    "NFTPurchased(address,address,uint256,uint256)": TypedContractEvent<
+      NFTPurchasedEvent.InputTuple,
+      NFTPurchasedEvent.OutputTuple,
+      NFTPurchasedEvent.OutputObject
+    >;
+    NFTPurchased: TypedContractEvent<
+      NFTPurchasedEvent.InputTuple,
+      NFTPurchasedEvent.OutputTuple,
+      NFTPurchasedEvent.OutputObject
     >;
 
     "NewListing(address,uint256,address,uint256)": TypedContractEvent<

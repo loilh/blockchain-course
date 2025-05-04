@@ -14,9 +14,9 @@ async function main() {
   await marketPlaceContract.waitForDeployment();
   console.log("MarketPlace deployed to:", await marketPlaceContract.getAddress());
 
-  await traning.safeMint('0x43780f67BaCC76069Edd6f5EAC1Ed3173876cC6b', 1);
-  await traning.safeMint('0x43780f67BaCC76069Edd6f5EAC1Ed3173876cC6b', 2);
-  await traning.safeMint('0x43780f67BaCC76069Edd6f5EAC1Ed3173876cC6b', 3);
+  await traning.safeMint('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 1);
+  await traning.safeMint('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 2);
+  await traning.safeMint('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 3);
 
   await traning.safeMint(owner.address, 4);
   await traning.safeMint(owner.address, 5);
@@ -26,7 +26,7 @@ async function main() {
 
 
   await owner.sendTransaction({
-    to: '0x43780f67BaCC76069Edd6f5EAC1Ed3173876cC6b',
+    to: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
     value: ethers.parseEther('10')
   })
   await marketPlaceContract.list(traning.target, 4, 100);
